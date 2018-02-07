@@ -12,9 +12,8 @@ def download_model(model_name, file_format='.tar.gz',\
     opener.retrieve(base_url + model_file, model_file)
     tar_file = tarfile.open(model_file)
     for file in tar_file.getmembers():
-        file_name = os.path.basename(file.name)
-        if 'frozen_inference_graph.pb' in file_name:
-            tar_file.extract(file, os.getcwd())
+     
+        tar_file.extract(file, os.getcwd())
     print("Extraction Done: {}".format(model_name+file_format)) 
             
 if __name__ == "__main__":
