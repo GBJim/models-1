@@ -11,6 +11,4 @@
 python object_detection/training_example.py
 ```
 
-4. <b>Export the Trained Model for Inference:</b>[export_inference_graph.py](https://github.com/GBJim/tfo_training/blob/master/research/object_detection/export_inference_graph.py)
-
-Please refer to [this document](https://github.com/GBJim/tfo_training/blob/master/research/object_detection/g3doc/exporting_models.md) for details.
+4. <b>Export the Trained Model for Inference:</b>[export_inference_graph.py](https://github.com/GBJim/tfo_training/blob/master/research/object_detection/export_inference_graph.py), please refer to [this document](https://github.com/GBJim/tfo_training/blob/master/research/object_detection/g3doc/exporting_models.md) for details.
