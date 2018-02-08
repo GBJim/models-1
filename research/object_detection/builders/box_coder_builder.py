@@ -34,7 +34,11 @@ def build(box_coder_config):
   Raises:
     ValueError: On empty box coder proto.
   """
+  print("CONFIG:{}".format(box_coder_config))
+  print("PB2:{}".format(box_coder_pb2.BoxCoder))
   if not isinstance(box_coder_config, box_coder_pb2.BoxCoder):
+    print("CONFIG:{}".format(box_coder_config))
+    print("PB2:{}".format(box_coder_pb2.BoxCoder))
     raise ValueError('box_coder_config not of type box_coder_pb2.BoxCoder.')
 
   if box_coder_config.WhichOneof('box_coder_oneof') == 'faster_rcnn_box_coder':
