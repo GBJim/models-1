@@ -1,11 +1,16 @@
-# TensorFlow Models
+# This fork dedicates on training the models for TFO
+## The following are the training steps and the corresponding files for a training example.
 
-This repository contains a number of different models implemented in [TensorFlow](https://www.tensorflow.org):
+<b>1.Prepare the Data:</b> [prepare_data_example.ipynb](https://github.com/GBJim/tfo_training/blob/master/research/object_detection/prepare_data_example.ipynb) 
 
-The [official models](official) are a collection of example models that use TensorFlow's high-level APIs. They are intended to be well-maintained, tested, and kept up to date with the latest stable TensorFlow API. They should also be reasonably optimized for fast performance while still being easy to read. We especially recommend newer TensorFlow users to start here.
+<b>2.Prepare the Pipeline Congifuration:</b> [example_fastrrcnn_inception.config](https://github.com/GBJim/tfo_training/blob/master/research/object_detection/config/example_fastrrcnn_inception.config)
 
-The [research models](research) are a large collection of models implemented in TensorFlow by researchers. It is up to the individual researchers to maintain the models and/or provide support on issues and pull requests.
+<b>3. Start the Training Process:</b> [training_example.py](https://github.com/GBJim/tfo_training/blob/master/research/object_detection/training_example.py)
+```Shell
+#Make sure you are at models/research/
+python object_detection/training_example.py
+```
 
-The [samples folder](samples) contains code snippets and smaller models that demonstrate features of TensorFlow, including code presented in various blog posts.
+4. <b>Export the Trained Model for Inference:</b>[export_inference_graph.py](https://github.com/GBJim/tfo_training/blob/master/research/object_detection/export_inference_graph.py)
 
-The [tutorials folder](tutorials) is a collection of models described in the [TensorFlow tutorials](https://www.tensorflow.org/tutorials/).
+Please refer to [this document](https://github.com/GBJim/tfo_training/blob/master/research/object_detection/g3doc/exporting_models.md) for details.
