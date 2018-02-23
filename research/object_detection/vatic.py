@@ -323,7 +323,7 @@ class VaticData():
         img_name = os.path.basename(index)
         set_num, v_num, img_num = img_name.split("_")
         set_num = set_num[-1]
-        img_num = img_num[:-4]
+       
         bboxes = self._annotation[set_num].get(img_num, {})
         return [bbox for bbox in bboxes.values() if bbox['outside']==0 and bbox['occluded']==0]
        

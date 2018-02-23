@@ -134,7 +134,7 @@ class coco():
                 x1, y1, x2, y2 = coco_annotation["boxes"][i]
                 label = self._classes[cls]
                 width = x2 - x1
-                height = y2 - y2
+                height = y2 - y1
                 bbox = {"x1":x1, "y1":y1, "width":width, "height":height, "label":label}
                 bboxes.append(bbox)
         return bboxes                                
