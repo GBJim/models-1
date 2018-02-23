@@ -50,22 +50,23 @@ def create_tf_example(bboxes, img_info, category_name2id,class_mapper={}):
   classes_text = [] # List of string class name of bounding box (1 per box)
   classes = [] # List of integer class id of bounding box (1 per box)
     
-  for bbox_id, bbox in bboxes.items():
-     if bbox['occluded'] == 0 and bbox['outside'] == 0:
+  for bbox in bboxes:
             
-        xmin = float(bbox['x1']) / width
-        xmax = float(bbox['x1'] + bbox['width']) / width
-        ymin = float(bbox['y1']) / height 
-        ymax = float(bbox['y1'] + bbox['height']) / height        
-        class_text = class_mapper[bbox['label']] if bbox['label'] in class_mapper else bbox['label']
-        class_id = category_name2id[class_text]
-       
-        xmins.append(xmin)
-        xmaxs.append(xmax)
-        ymins.append(ymin)
-        ymaxs.append(ymax)    
-        classes_text.append(str(class_text))        
-        classes.append(class_id)
+    xmin = float(bbox['x1']) / width
+    xmax = float(bbox['x1'] + bbox['width']) / width
+    ymin = float(bbox['y1']) / height 
+    ymax = float(bbox['y1'] + bbox['height']) / height        
+    class_text = class_mapper[bbox['label']] if bbox['label'] in class_mapper else bbox['label']
+    if class_text == "__background__":
+        continue
+    class_id = category_name2id[class_text]
+
+    xmins.append(xmin)
+    xmaxs.append(xmax)
+    ymins.append(ymin)
+    ymaxs.append(ymax)    
+    classes_text.append(str(class_text))        
+    classes.append(class_id)
 
   
   tf_example = tf.train.Example(features=tf.train.Features(feature={
@@ -120,6 +121,20 @@ def load_meta(meta_path):
 class IMDBGroup():
     
     
+    
+    
+    def report(self):
+        report = {}
+        for vatic_data in self._datasets:
+            for i in range(vatic_data.size):                
+                for bbox in vatic_data.bbox_at(i):
+                    label = bbox['label']
+                    if label in vatic_data.CLS_mapper:
+                        label = vatic_data.CLS_mapper[label]
+                    report[label] = report.get(label, 0) + 1
+            
+        return report     
+        
 
     
     def _get_img_paths(self):
@@ -160,17 +175,19 @@ class IMDBGroup():
 
             if vatic_data.is_video:
                 img = imread(vatic_data.image_path_at(0))
-                img_info["height"], img_info['width'], _ = img.shape
+                img_info["height"] = img.shape[0]
+                img_info['width'] = img.shape[1]
                 img_info["format"] = vatic_data.image_path_at(0).split('.')[-1]
 
             for i in range(vatic_data.size):
                 img_info['path'] = vatic_data.image_path_at(i)
                 if not vatic_data.is_video:
                     img = imread(vatic_data.image_path_at(i))
-                    img_info["height"], img_info['width'], _ = img.shape
+                    img_info["height"] = img.shape[0]
+                    img_info['width'] = img.shape[1]
                     img_info["format"] = vatic_data.image_path_at(i).split('.')[-1]
 
-                bboxes = vatic_data.bbox_from_index(img_info['path'])
+                bboxes = vatic_data.bbox_at(i)
                 tf_record = create_tf_example(bboxes, img_info, category_name2id, vatic_data.CLS_mapper)
                 writer.write(tf_record.SerializeToString())
         writer.close()  
@@ -274,7 +291,7 @@ class VaticData():
                 img_info["height"], img_info['width'], _ = img.shape
                 img_info["format"] = self.image_path_at(i).split('.')[-1]
                 
-            bboxes = self.bbox_from_index(img_info['path'])
+            bboxes = self.bbox_at(i)
             tf_record = create_tf_example(bboxes, img_info, category_name2id, self.CLS_mapper)
             writer.write(tf_record.SerializeToString())
         writer.close()
@@ -301,12 +318,14 @@ class VaticData():
                 'Path does not exist: {}'.format(image_path)
         return image_path
     
-    def bbox_from_index(self, index):
+    def bbox_at(self, i):
+        index = self._image_index[i]
         img_name = os.path.basename(index)
         set_num, v_num, img_num = img_name.split("_")
         set_num = set_num[-1]
         img_num = img_num[:-4]
-        return self._annotation[set_num].get(img_num, {})
+        bboxes = self._annotation[set_num].get(img_num, {})
+        return [bbox for bbox in bboxes.values() if bbox['outside']==0 and bbox['occluded']==0]
        
     
     
@@ -369,8 +388,9 @@ if __name__ == '__main__':
     
     A = VaticData("chruch_street")
     B = VaticData("YuDa")
-    img_path = A.image_path_at(5)
-    bbox = A.bbox_from_index(img_path)
+    imdb_group = IMDBGroup([A, B])
+    imdb_group.dumpTFRecord("Test.record")
+                         
     
     
     
