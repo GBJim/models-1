@@ -199,6 +199,7 @@ class IMDBGroup():
     
     def __init__(self, datasets):
         self._datasets = datasets
+        self.size = sum([dataset.size for dataset in datasets])
         
         
       

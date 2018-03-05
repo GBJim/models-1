@@ -1,6 +1,6 @@
 train_dir = "/root/models/research/object_detection/rc1/"
 config_path = "/root/models/research/object_detection/config/AI_VMS_RC1_fastrrcnn_inception.config"
-GPU_ID = 3
+GPU_ID = 1
 
 
 import os
